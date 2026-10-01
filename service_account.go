@@ -87,10 +87,15 @@ func (sas ServiceAccountService) List(ctx context.Context, query, pageToken stri
 		return
 	}
 
+	// Empty page tokens are rejected by the server, so are only sent when present.
 	params := map[string]string{
-		"limit":      fmt.Sprintf("%d", limit),
-		"page_token": pageToken,
-		"q":          query,
+		"limit": fmt.Sprintf("%d", limit),
+	}
+	if pageToken != "" {
+		params["page_token"] = pageToken
+	}
+	if query != "" {
+		params["q"] = query
 	}
 
 	req, err := sas.client.newRequest(ctx, http.MethodGet, "api/v2/service-accounts", withParams(params))
@@ -173,9 +178,12 @@ func (sas ServiceAccountService) ListWorkloadIdentityBindings(ctx context.Contex
 		return
 	}
 
+	// Empty page tokens are rejected by the server, so are only sent when present.
 	params := map[string]string{
-		"limit":      fmt.Sprintf("%d", limit),
-		"page_token": pageToken,
+		"limit": fmt.Sprintf("%d", limit),
+	}
+	if pageToken != "" {
+		params["page_token"] = pageToken
 	}
 
 	req, err := sas.client.newRequest(ctx, http.MethodGet, fmt.Sprintf("api/v2/service-accounts/%s/workload-identity-bindings", url.PathEscape(name)), withParams(params))

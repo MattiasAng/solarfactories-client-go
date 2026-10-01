@@ -78,10 +78,15 @@ func (wips WorkloadIdentityProviderService) List(ctx context.Context, query, pag
 		return
 	}
 
+	// Empty page tokens are rejected by the server, so are only sent when present.
 	params := map[string]string{
-		"limit":      fmt.Sprintf("%d", limit),
-		"page_token": pageToken,
-		"q":          query,
+		"limit": fmt.Sprintf("%d", limit),
+	}
+	if pageToken != "" {
+		params["page_token"] = pageToken
+	}
+	if query != "" {
+		params["q"] = query
 	}
 
 	req, err := wips.client.newRequest(ctx, http.MethodGet, "api/v2/workload-identity-providers", withParams(params))
