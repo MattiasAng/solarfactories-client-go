@@ -56,3 +56,45 @@ func OptionalBoolOf(value bool) *bool {
 func OptionalBool() *bool {
 	return nil
 }
+
+// FetchAllV5 is a convenience function to retrieve all items of a token-paginated API v2 resource.
+func FetchAllV5[T any](pageFetchFunc func(pageToken string, limit uint32) (PageV5[T], error)) (items []T, err error) {
+	err = ForEachV5(pageFetchFunc, func(item T) error {
+		items = append(items, item)
+		return nil
+	})
+
+	return
+}
+
+// ForEachV5 is a convenience function to perform an action on every item of a token-paginated API v2 resource.
+func ForEachV5[T any](pageFetchFunc func(pageToken string, limit uint32) (PageV5[T], error), handlerFunc func(item T) error) (err error) {
+	const limit = 100
+
+	var (
+		page      PageV5[T]
+		pageToken = ""
+	)
+
+	for {
+		page, err = pageFetchFunc(pageToken, limit)
+		if err != nil {
+			break
+		}
+
+		for i := range page.Items {
+			err = handlerFunc(page.Items[i])
+			if err != nil {
+				return fmt.Errorf("failed to handle item %d with page token %q: %w", i+1, pageToken, err)
+			}
+		}
+
+		if len(page.Items) == 0 || page.NextPageToken == "" {
+			break
+		}
+
+		pageToken = page.NextPageToken
+	}
+
+	return
+}

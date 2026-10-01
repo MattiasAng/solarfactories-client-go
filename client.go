@@ -36,35 +36,37 @@ type Client struct {
 	debug      bool
 	about      About
 
-	About               AboutService
-	ACL                 ACLService
-	Analysis            AnalysisService
-	BOM                 BOMService
-	Component           ComponentService
-	Config              ConfigService
-	Event               EventService
-	Finding             FindingService
-	Health              HealthService
-	LDAP                LDAPService
-	License             LicenseService
-	LicenseGroup        LicenseGroupService
-	Metrics             MetricsService
-	Notification        NotificationService
-	OIDC                OIDCService
-	Permission          PermissionService
-	Policy              PolicyService
-	PolicyCondition     PolicyConditionService
-	PolicyViolation     PolicyViolationService
-	Project             ProjectService
-	ProjectProperty     ProjectPropertyService
-	Repository          RepositoryService
-	Tag                 TagService
-	Team                TeamService
-	User                UserService
-	VEX                 VEXService
-	ViolationAnalysis   ViolationAnalysisService
-	Vulnerability       VulnerabilityService
-	VulnerabilityPolicy VulnerabilityPolicyService
+	About                    AboutService
+	ACL                      ACLService
+	Analysis                 AnalysisService
+	BOM                      BOMService
+	Component                ComponentService
+	Config                   ConfigService
+	Event                    EventService
+	Finding                  FindingService
+	Health                   HealthService
+	LDAP                     LDAPService
+	License                  LicenseService
+	LicenseGroup             LicenseGroupService
+	Metrics                  MetricsService
+	Notification             NotificationService
+	OIDC                     OIDCService
+	Permission               PermissionService
+	Policy                   PolicyService
+	PolicyCondition          PolicyConditionService
+	PolicyViolation          PolicyViolationService
+	Project                  ProjectService
+	ProjectProperty          ProjectPropertyService
+	Repository               RepositoryService
+	ServiceAccount           ServiceAccountService
+	Tag                      TagService
+	Team                     TeamService
+	User                     UserService
+	VEX                      VEXService
+	ViolationAnalysis        ViolationAnalysisService
+	Vulnerability            VulnerabilityService
+	VulnerabilityPolicy      VulnerabilityPolicyService
+	WorkloadIdentityProvider WorkloadIdentityProviderService
 }
 
 func NewClient(baseURL string, options ...ClientOption) (*Client, error) {
@@ -114,6 +116,7 @@ func NewClient(baseURL string, options ...ClientOption) (*Client, error) {
 	client.Project = ProjectService{client: &client}
 	client.ProjectProperty = ProjectPropertyService{client: &client}
 	client.Repository = RepositoryService{client: &client}
+	client.ServiceAccount = ServiceAccountService{client: &client}
 	client.Tag = TagService{client: &client}
 	client.Team = TeamService{client: &client}
 	client.User = UserService{client: &client}
@@ -121,6 +124,7 @@ func NewClient(baseURL string, options ...ClientOption) (*Client, error) {
 	client.ViolationAnalysis = ViolationAnalysisService{client: &client}
 	client.Vulnerability = VulnerabilityService{client: &client}
 	client.VulnerabilityPolicy = VulnerabilityPolicyService{client: &client}
+	client.WorkloadIdentityProvider = WorkloadIdentityProviderService{client: &client}
 
 	client.about, err = client.About.Get(context.Background())
 	if err != nil {
